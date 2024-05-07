@@ -7,6 +7,7 @@ import {
   signInSuccess,
   signInFailure,
 } from "../redux/user/userSlice";
+import OAuth from "../components/OAuth";
 
 
 export default function SignIn() {
@@ -99,6 +100,7 @@ export default function SignIn() {
                 "Sign In"
               )}
             </Button>
+            <OAuth/>
           </form>
           <div className="flex mt-5 text-sm gap-2">
             <span>create an account </span>
