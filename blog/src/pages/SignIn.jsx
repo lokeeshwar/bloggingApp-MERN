@@ -1,45 +1,52 @@
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch , useSelector} from "react-redux";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../redux/user/userSlice";
+
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const navigate =useNavigate()
+  const {loading,error:errorMessage} = useSelector((state) => state.user)
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let { email, password } = formData;
-    if (!password || !email) {
-      return setErrorMessage("please fill out all the fields");
+    if (!formData.email || !formData.password) {
+      return dispatch(signInFailure('Please fill all the fields'));
     }
     try {
-      setLoading(true);
-      setErrorMessage(null);
-      const res = await fetch("/api/auth/signin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      dispatch(signInStart());
+      const res = await fetch('/api/auth/signin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-      if (data.success === false) {
-        return setErrorMessage(data.message);
+      console.log(data);
+      if (data.sucess === false) {
+        dispatch(signInFailure(data.message));
       }
-      setLoading(false);
+
       if (res.ok) {
-        navigate('/')
+        dispatch(signInSuccess(data));
+        navigate('/');
       }
-    } catch (err) {
-      setErrorMessage(err.message);
-      setLoading(false);
+    } catch (error) {
+      dispatch(signInFailure(error.message));
     }
   };
-
+  
 
   return (
     <div className="min-h-screen mt-20">
@@ -85,7 +92,8 @@ export default function SignIn() {
             >
               {loading ? (
                 <>
-                  <Spinner className="sm" /> <span className='pl-3'>loading...</span>
+                  <Spinner className="sm" />{" "}
+                  <span className="pl-3">loading...</span>
                 </>
               ) : (
                 "Sign In"
