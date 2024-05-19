@@ -68,7 +68,7 @@ export default function Header() {
                   @{currentUser.email}
                 </span>
               </Dropdown.Header>
-              <Link to={"/dashboard"}>
+              <Link to={"/dashboard?tab=profile"}>
                 <Dropdown.Item>Profile</Dropdown.Item>
               </Link>
               <Dropdown.Divider />
