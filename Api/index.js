@@ -10,6 +10,7 @@ app.use(cookieParser())
 
 const userRoutes = require('./routes/userRoutes')
 const authRoute = require('./routes/authRoute')
+const postRoute = require('./routes/postRoute')
 
 const DB = process.env.DATABASE.replace("<PASSWORD>", process.env.DATABASE_PASSWORD);
 mongoose
@@ -29,6 +30,7 @@ app.listen(port, () => {
 
 app.use('/api/user', userRoutes )
 app.use('/api/auth', authRoute )
+app.use('/api/post', postRoute)
 
 
 app.use((err,req,res,next) => {
