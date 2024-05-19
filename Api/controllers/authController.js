@@ -84,7 +84,7 @@ const google = async (req,res,next) => {
       const{password,...rest} = newUser._doc
       res.status(200).cookie('access_token',token,{
        httpOnly :true 
-      }).json({rest})
+      }).json(rest)
     }
   }catch(error){
     next(error)

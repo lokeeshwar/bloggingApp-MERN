@@ -1,12 +1,30 @@
-import { Avatar, Button,Dropdown, Navbar, TextInput } from "flowbite-react";
+import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
 import { Link, useLocation } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { signoutSuccess } from "../redux/user/userSlice";
 
 export default function Header() {
   const path = useLocation().pathname;
   const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
+  const handleSignout = async () => {
+    try {
+      const res = await fetch("/api/user/signout", {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        console.log(data.message);
+      } else {
+        dispatch(signoutSuccess());
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   return (
     <div>
@@ -45,14 +63,16 @@ export default function Header() {
               }
             >
               <Dropdown.Header>
-                <span className='block text-sm'>@{currentUser.username}</span>
-                <span className='block text-sm font-medium truncate'>@{currentUser.email}</span>
+                <span className="block text-sm">@{currentUser.username}</span>
+                <span className="block text-sm font-medium truncate">
+                  @{currentUser.email}
+                </span>
               </Dropdown.Header>
-              <Link to={'/dashboard'}>
+              <Link to={"/dashboard"}>
                 <Dropdown.Item>Profile</Dropdown.Item>
-              </Link >
-              <Dropdown.Divider/>
-              <Dropdown.Item>Sign Out</Dropdown.Item>
+              </Link>
+              <Dropdown.Divider />
+              <Dropdown.Item onClick={handleSignout}>Sign Out</Dropdown.Item>
             </Dropdown>
           ) : (
             <Link to="/signin">
